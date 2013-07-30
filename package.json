@@ -1,0 +1,33 @@
+{
+	"name": "jsel",
+	"version": "1.0.0",
+	"description": "DOM 3 XPath implementation for JavaScript objects.",
+	"engines": {
+		"node": ">=0.10.0"
+	},
+	"author": {
+		"name": "Ali Chamas"
+	},
+	"dependencies": {},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/goto100/xpath.git"
+	},
+	"main": "./jsel.js",
+	"keywords": [
+		"xpath",
+		"json",
+		"javascript",
+		"expression",
+		"selector"
+	],
+	"licenses": [
+		{
+			"type": "MIT License",
+			"url": "http://www.opensource.org/licenses/mit-license.php"
+		}
+	],
+	"readmeFilename": "README.md",
+	"_id": "jsel@1.0.0",
+	"_from": "jsel@"
+}
