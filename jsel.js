@@ -4394,30 +4394,35 @@ module.exports = jsel = (function () {
 		nodeValue: function() {
 			return this.node.nodeValue();
 		},
-		select: function (xpath, single) {
+		selectAll: function (xpath) {
 			var result = select(xpath, this, false, this._map);
 			if (result instanceof Array) {
+				// convert wrapped nodes to original node values
 				result = each(result, function (node) {
 					return node.toValue();
 				});
-				if (single === true) {
-					return result[0];
-				} else {
-					try {
-						// modern
-						Object.defineProperty(result, "each", {
-							enumerable: false,
-							value: function (iterator, scope) {
-								return each(result, iterator, scope);
-							}
-						});
-					} catch (e) {
-						// old skool
-						result.each = function (iterator, scope) {
+				// add an each property to the array for enumeration
+				try {
+					// modern
+					Object.defineProperty(result, "each", {
+						enumerable: false,
+						value: function (iterator, scope) {
 							return each(result, iterator, scope);
-						};
-					}
+						}
+					});
+				} catch (e) {
+					// old skool
+					result.each = function (iterator, scope) {
+						return each(result, iterator, scope);
+					};
 				}
+			}
+			return result;
+		},
+		select: function (xpath) {
+			var result = this.selectAll(xpath);
+			if (result instanceof Array) {
+				return result.length ? result[0] : null;
 			}
 			return result;
 		},
@@ -4683,7 +4688,7 @@ module.exports = jsel = (function () {
 			if (node instanceof NamedNode) {
 				return node.nodeName;
 			}
-			return null;
+			return node instanceof Array ? "array" : typeof node;
 		},
 		attributes: function (node) {
 			if (node instanceof NamedNode) {
@@ -4719,7 +4724,11 @@ module.exports = jsel = (function () {
 			return children;
 		},
 		nodeValue: function (node) {
-			return null;
+			if (typeof node !== "object" && !(node instanceof Array)) {
+				return node;
+			} else {
+				return null;
+			}
 		}
 	};
 

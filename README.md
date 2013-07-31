@@ -132,15 +132,18 @@ For example, say you had the following data.
         }
     });
 
-The following expressions would be true.
+The following expressions would all be true.
 
-    dom.select("count(//*)") === 4;                     // true
-    dom.select("@title", true) === "abc";               // true
-    dom.select("//children/*[1]/@foo", true) === "bar"  // true
-    dom.select("count(//@foo)") === 2;                  // true
-    dom.select("//@foo[2]", true) === 555;              // true
-    dom.select("count(//children//*)") === 2;           // true
-    dom.select("//children/*[2]", true) === "val";      // true
+    dom.select("count(//*)") === 5;
+    dom.select("@title") === "abc";
+    dom.select("//children/*[1]/@foo") === "bar";
+    dom.select("count(//@foo)") === 2;
+    dom.select("//@foo[2]") === 555;
+    dom.select("count(//children//*)") === 2;
+    dom.select("//children/*[2]") === "val";
+    dom.select('name(//children/*[2])') === "string";
+    dom.select('name(*/*[2])') === "subData";
+    dom.select('*/children/*[2]/text()') === "val";
 
 
 ## Mappings
