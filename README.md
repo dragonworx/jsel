@@ -150,15 +150,15 @@ For example, if you had elements or attributes with long names, you could create
 
 To provide your own custom mappings, you pass an object to `dom.map(..)` containing keys which are regex patterns to find in your element or attribute names, and the string value to replace them with. Since the strings in the mappings objects are regex patterns, you can use captures in your replace value.
 
-    // tell the dom that when we write "e" in our expressions, replace it with "someLongElementOrAttributeName"
+    // tell the dom that when we write "e" in our expressions, replace it with "longElementName"
     dom.map({
-        'e': 'someLongElementOrAttributeName'
+        'e': 'longElementName'
     });
 
-You can then use the shorthand form "e" instead of the longer "someLongElementOrAttributeName" in your expression.
+You can then use the shorthand form "e" instead of the longer "longElementName" in your expression.
 
      var result = dom.select('//e1');
-     // will return any node with name "someLongElementOrAttributeName1"
+     // will return any node with name "longElementName1"
 
 ## Tests
 Install [mocha](http://visionmedia.github.io/mocha/#installation) globally
