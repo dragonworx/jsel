@@ -116,6 +116,33 @@ You have total control of how to interpret these values from each node in your d
 
 It's even possible to create a temporary array or object structure for `childNodes` and `attributes` if you would like to compress your data structure in your expressions and aggregate inner values.
 
+For example, say you had the following data.
+
+    var dom = jsel({
+        title: "abc",
+        children: [
+            {
+                foo: "bar"
+            },
+            'val'
+        ],
+        subData: {
+            foo: 555,
+            foo2: "bar2"
+        }
+    });
+
+The following expressions would be true.
+
+    dom.select("count(//*)") === 4;                     // true
+    dom.select("@title", true) === "abc";               // true
+    dom.select("//children/*[1]/@foo", true) === "bar"  // true
+    dom.select("count(//@foo)") === 2;                  // true
+    dom.select("//@foo[2]", true) === 555;              // true
+    dom.select("count(//children//*)") === 2;           // true
+    dom.select("//children/*[2]", true) === "val";      // true
+
+
 ## Mappings
 JSElement allows you to use different element names and attributes in your expressions to those defined by your adapters. This let's you create shorthand or normalised expressions.
 

@@ -4705,6 +4705,9 @@ module.exports = jsel = (function () {
 			if (node instanceof NamedNode) {
 				return node.childNodes;
 			}
+			if (node instanceof Array) {
+				return node;
+			}
 			var children = [];
 			for (var key in node) {
 				if (node.hasOwnProperty(key)) {
