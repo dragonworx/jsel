@@ -146,19 +146,19 @@ The following expressions would be true.
 ## Mappings
 JSElement allows you to use different element names and attributes in your expressions to those defined by your adapters. This let's you create shorthand or normalised expressions.
 
-For example, if you had elements with long names or attribute names, you could create mappings to shorter forms.
+For example, if you had elements or attributes with long names, you could create mappings to use shorter forms in your expressions.
 
-To provide your own custom mappings, you pass an object to the `dom.map(..)` function containing a key which is a regex to find, and the value to replace it with when resolving element names (including attributes).
+To provide your own custom mappings, you pass an object to `dom.map(..)` containing keys which are regex patterns to find in your element or attribute names, and the string value to replace them with. Since the strings in the mappings objects are regex patterns, you can use captures in your replace value.
 
-    // tell the dom that when we write "e" in our expressions, replace it with "element"
+    // tell the dom that when we write "e" in our expressions, replace it with "someLongElementOrAttributeName"
     dom.map({
-        'e': 'element'
+        'e': 'someLongElementOrAttributeName'
     });
 
-You can then use the shorthand form in your expression.
+You can then use the shorthand form "e" instead of the longer "someLongElementOrAttributeName" in your expression.
 
      var result = dom.select('//e1');
-     // will return any node with name "element1"
+     // will return any node with name "someLongElementOrAttributeName1"
 
 ## Tests
 Install [mocha](http://visionmedia.github.io/mocha/#installation) globally
