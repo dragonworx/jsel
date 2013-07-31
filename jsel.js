@@ -4388,6 +4388,12 @@ module.exports = jsel = (function () {
 		parentNode: function () {
 			return null;
 		},
+		attributes: function() {
+			return this.node.attributes();
+		},
+		nodeValue: function() {
+			return this.node.nodeValue();
+		},
 		select: function (xpath, single) {
 			var result = select(xpath, this, false, this._map);
 			if (result instanceof Array) {

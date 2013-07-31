@@ -97,7 +97,7 @@ describe('Custom Adapter:', function () {
 	});
 });
 
-describe('Custom Mappings:', function() {
+describe('Custom Mappings with Adapters:', function() {
 	var dom = jsel(data);
 	dom.adapters(customAdapters).map(customMappings);
 	it('should return 1 for select "count(//e1)"', function () {
@@ -105,5 +105,15 @@ describe('Custom Mappings:', function() {
 	});
 	it('should return 1 for select "count(//e2)"', function () {
 		assert.equal(1, dom.select('count(//e2)'));
+	});
+});
+
+describe('Custom Mappings Attributes:', function() {
+	var dom = jsel({foo:'abc'});
+	dom.map({
+		"z": "foo"
+	});
+	it('should return "abc" for select "@z"', function () {
+		assert.equal('abc', dom.select("@z", true));
 	});
 });
