@@ -1,0 +1,20 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>JSElement Tests</title>
+    <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
+</head>
+<body>
+<div id="mocha"></div>
+<script src="../jsel.js"></script>
+<script src="../node_modules/mocha/mocha.js"></script>
+<script>mocha.setup('bdd')</script>
+<script src="assert.js"></script>
+<script src="../test/test.js"></script>
+<script>
+    mocha.checkLeaks();
+    mocha.globals(['jsel']);
+    mocha.run();
+</script>
+</body>
+</html>

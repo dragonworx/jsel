@@ -1,5 +1,10 @@
-var assert = require("assert");
-var jsel = require("../jsel");
+/**
+ * use require in node.js
+ */
+if (typeof require === "function") {
+	var assert = require("assert");
+	var jsel = require("../jsel");
+}
 
 // define some arbitrary data
 var data = {

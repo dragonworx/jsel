@@ -1,6 +1,6 @@
 {
 	"name": "jsel",
-	"version": "1.0.0",
+	"version": "0.8.0",
 	"description": "DOM 3 XPath implementation for JavaScript objects.",
 	"engines": {
 		"node": ">=0.10.0"
@@ -9,9 +9,12 @@
 		"name": "Ali Chamas"
 	},
 	"dependencies": {},
+	"devDependencies": {
+		"mocha": "1.12.x"
+	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/goto100/xpath.git"
+		"url": "https://github.com/dragonworx/jsel.git"
 	},
 	"main": "./jsel.js",
 	"keywords": [
