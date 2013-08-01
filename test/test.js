@@ -124,6 +124,10 @@ describe('General Selectors:', function () {
 	it('should return "val" for select "*/children/*[2]/text()"', function () {
 		assert.equal("val", dom.select('*/children/*[2]/text()'));
 	});
+	it('should return ["bar", 555] for selectAll "//@foo"', function () {
+		var result = dom.selectAll('//@foo');
+		assert.equal(result instanceof Array && result.length === 2 && result[0] === "bar", true);
+	});
 });
 
 describe('Custom Adapter:', function () {

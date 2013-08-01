@@ -1,4 +1,4 @@
-## JSElement
+## JSEL
 DOM 3 XPath implementation for JavaScript object data.
 
 Written by Ali Chamas [site](http://www.musicartscience.com.au).
@@ -17,8 +17,8 @@ Then `require(..)` module.
     var jsel = require('jsel');
     var dom = jsel(data);
 
-## Browser Usage
-To run jselement in the browser, just include the `jsel.js` file from the npm module install into your page.
+## Browser Install
+To run jsel in the browser, just include the `jsel.js` file from the npm module install into your page.
 
     <script src='jsel.js'></script>
 
@@ -27,127 +27,74 @@ You will receive a global `jsel` object. Use it like you would a `require('jsel'
     var dom = jsel(data);
 
 ## Usage
-JSElement allows you to apply XPath expressions to your JavaScript data objects.
+jsel allows you to apply XPath expressions to your JavaScript data objects.
 
-Imagine you have some arbitrary data, and the data may be uniform or not:
+For example, say you had the following data.
 
-    var data = {
-    	type: 'root',
-    	value: 'val1',
-    	attributes: {id: 1},
-    	children: [
-    		{
-    			type: 'element1',
-    			value: 'val1',
-    			attributes: {id: 2, egg: 'flip'},
-    			children: [
-    				{
-    					type: 'foo1',
-    					value: 'val3',
-    					attributes: {id: 3}
-    				},
-    				{
-    					type: 'foo2',
-    					value: 'val4',
-    					attributes: {id: 4}
-    				}
-    			]
-    		},
-    		{
-    			type: 'element2',
-    			value: 'val5',
-    			attributes: {id: 5, egg: 'roll'},
-    			children: []
-    		}
-    	]
-    };
+    var dom = jsel({
+        title: 'abc',
+        children: [
+            {
+                foo: 'bar'
+            },
+            'val'
+        ],
+        subData: {
+            foo: 555,
+            foo2: 'bar2'
+        }
+    });
 
-First, wrap your data object in the `jsel` module export object. This will give you a document object model, similar to an XMLDocument.
+The following expressions would all be true.
 
-    var jsel = require('jsel');
-    var dom = jsel(data);
+    dom.select('count(//*)') === 5;
+    dom.select('@title') === 'abc';
+    dom.select('//children/*[1]/@foo') === 'bar';
+    dom.select('count(//@foo)') === 2;
+    dom.select('//@foo[2]') === 555;
+    dom.select('count(//children//*)') === 2;
+    dom.select('//children/*[2]') === 'val';
+    dom.select('name(//children/*[2])') === 'string';
+    dom.select('name(*/*[2])') === 'subData';
+    dom.select('*/children/*[2]/text()') === 'val';
+    dom.selectAll('//@foo') === ['bar', 555];
 
-Now you can call `dom.select(..)` and pass an xpath expression to select nodes or values from your document.
-
-    var result = dom.select('count(//*)');
-    // will return a number for the count of all nodes
-
-Pass true as the second argument to select if you only want a single value.
-
-    var result = dom.select('//*', true);
-    // will return the first node of all nodes selected
+Use `dom.select(..)` to return a single value, and `dom.selectAll(..)` to return a result set.
 
 ## Adapters
-JSElement uses adapters internally to convert your JavaScript object into an XMLElement-like interface that the XPath engine can walk.
-
-This means that for every node in your document structure, JSElement will want to know the return type for the following properties:
+An adapter is a callback function you give to the `dom` object, to resolve one of the following properties for any node in your data.
 
 * **nodeName** - *{string | null}* the element name of the node
 * **childNodes** - *{array | null}* the children of the node
 * **attributes** - *{object | null}* a key/value object of the node's attributes
 * **nodeValue** - *{* | null}* the whole value of the node
 
-JSElement has standard adapters that convert all string or number values to attributes, and all object or array values to children.
+jsel has standard adapters built in that convert all string or number values to attributes, and all object or array values to named children. Therefore you don't even need to use adapters if you like.
 
-To provide your own custom adapters, you pass an object to `dom.adapters(..)` with the following keys.
+To provide your own custom adapters, you pass an object to `dom.adapters(..)` with all or some of the following keys. You can also return `null` for any of the values.
 
     dom.adapters({
-        // nodeValue can either be a string with property name
-        // or a function returning a string
-        nodeValue: function(node) {
-            // assumes each node will have a type property
-            return node.type;
+        nodeName: function(node) {
+            // return a string value to represent the nodes element name
         },
         childNodes: function(node) {
-            // assumes each node will have a children property
-            return node.children;
+            // return an array with the children of this node
         },
         attributes: function(node) {
-            // assumes each node will have an attributes property
-            return node.attributes;
+            // return an object with key values to represent the nodes attributes
         },
         nodeValue: function(node) {
-            // assumes each node will have a value property
-            return node.value;
+            // return any value to represent the nodes value.
+            // you can use text() in the expression to select the value
         }
     });
 
-You have total control of how to interpret these values from each node in your dom as they are being required. JSElement will cache the values so it's nice and efficient. This means the extra objects required to wrap your data will only be created and cached as the xpath engine needs them.
+You have total control of how to interpret these values from each node in your dom as they are being required. jsel will cache the values so it's nice and efficient. This means the extra objects required to wrap your data will only be created and cached as the xpath engine needs them.
 
 It's even possible to create a temporary array or object structure for `childNodes` and `attributes` if you would like to compress your data structure in your expressions and aggregate inner values.
 
-For example, say you had the following data.
-
-    var dom = jsel({
-        title: "abc",
-        children: [
-            {
-                foo: "bar"
-            },
-            'val'
-        ],
-        subData: {
-            foo: 555,
-            foo2: "bar2"
-        }
-    });
-
-The following expressions would all be true.
-
-    dom.select("count(//*)") === 5;
-    dom.select("@title") === "abc";
-    dom.select("//children/*[1]/@foo") === "bar";
-    dom.select("count(//@foo)") === 2;
-    dom.select("//@foo[2]") === 555;
-    dom.select("count(//children//*)") === 2;
-    dom.select("//children/*[2]") === "val";
-    dom.select('name(//children/*[2])') === "string";
-    dom.select('name(*/*[2])') === "subData";
-    dom.select('*/children/*[2]/text()') === "val";
-
-
 ## Mappings
-JSElement allows you to use different element names and attributes in your expressions to those defined by your adapters. This let's you create shorthand or normalised expressions.
+jsel allows you to use different element names and attributes in your expressions to those defined by your adapters. This means you can use shorthand names in your expressions.
 
 For example, if you had elements or attributes with long names, you could create mappings to use shorter forms in your expressions.
 
