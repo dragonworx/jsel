@@ -60,7 +60,8 @@ var customAdapters = {
 
 // define custom mappings of element names used in expressions, to their expanded form in the data
 var customMappings = {
-	'e': 'element'
+	'element': 'element1|element2',
+	'anyAttrib1|anyAttrib2': 'id|egg'
 };
 
 describe('Standard Adapter:', function () {
@@ -150,20 +151,23 @@ describe('Custom Adapter:', function () {
 describe('Custom Mappings with Adapters:', function() {
 	var dom = jsel(data);
 	dom.adapters(customAdapters).map(customMappings);
-	it('should return 1 for select "count(//e1)"', function () {
-		assert.equal(1, dom.select('count(//e1)'));
+	it('should return 2 for select "count(//element)"', function () {
+		assert.equal(2, dom.select('count(//element)'));
 	});
-	it('should return 1 for select "count(//e2)"', function () {
-		assert.equal(1, dom.select('count(//e2)'));
+	it('should return 5 for select "count(//*[@anyAttrib1]"', function () {
+		assert.equal(5, dom.select('count(//*[@anyAttrib1])'));
 	});
 });
 
 describe('Custom Mappings Attributes:', function() {
 	var dom = jsel({foo:'abc'});
 	dom.map({
-		"z": "foo"
+		"z|y": "foo"
 	});
 	it('should return "abc" for select "@z"', function () {
 		assert.equal('abc', dom.select("@z"));
+	});
+	it('should return "abc" for select "@y"', function () {
+		assert.equal('abc', dom.select("@y"));
 	});
 });

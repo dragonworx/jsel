@@ -1961,7 +1961,7 @@ module.exports = jsel = (function () {
 							break;
 
 						case Step.SELF:
-							console.log("SELF");
+//							console.log("SELF");
 							if (step.nodeTest.matches(xpc.contextNode, xpc)) {
 								newNodes.push(xpc.contextNode);
 							}
@@ -2184,9 +2184,89 @@ module.exports = jsel = (function () {
 	NodeTest.prototype.init = function (type, value) {
 		this.type = type;
 		this.value = value;
+	};
+
+	NodeTest.prototype._matches = function (testName, nodeName) {
+		if (!(testName || nodeName)) return false;
 		if (XPathExpression.mappings) {
-			this.value = this.translate(this.value);
+			for (var key in XPathExpression.mappings) {
+				if (XPathExpression.mappings.hasOwnProperty(key)) {
+					var testRegex = new RegExp(key, 'ig');
+					var nodeRegex = new RegExp(XPathExpression.mappings[key], 'ig');
+					if (testRegex.test(testName) && nodeRegex.test(nodeName)) {
+						return true;
+					}
+				}
+			}
 		}
+		return testName.toLowerCase() == nodeName.toLowerCase()
+	};
+
+	NodeTest.prototype.matches = function (n, xpc) {
+		switch (this.type) {
+			case NodeTest.NAMETESTANY:
+				if (n.nodeType() == 2 /*Node.ATTRIBUTE_NODE*/
+					|| n.nodeType() == 1) { /*Node.ELEMENT_NODE*/
+					return true;
+				}
+				return false;
+			case NodeTest.NAMETESTPREFIXANY:
+				if ((n.nodeType() == 2 /*Node.ATTRIBUTE_NODE*/ || n.nodeType() == 1 /*Node.ELEMENT_NODE*/)) {
+					var ns = xpc.namespaceResolver.getNamespace(this.value, xpc.expressionContextNode);
+					if (ns == null) {
+						throw new Error("Cannot resolve QName " + this.value);
+					}
+					return true;
+				}
+				return false;
+			case NodeTest.NAMETESTQNAME:
+				if (n.nodeType() == 2 /*Node.ATTRIBUTE_NODE*/
+					|| n.nodeType() == 1) { /*Node.ELEMENT_NODE*/
+					// automatically fail if trying to use namespace
+					if (this.value.indexOf(":") > -1) {
+						return false;
+					}
+					// element name in expression being tested
+					var test = Utilities.resolveQName(this.value, xpc.namespaceResolver, xpc.expressionContextNode, false);
+					if (test[0] == null) {
+						throw new Error("Cannot resolve QName " + this.value);
+					}
+					// namespace
+					test[0] = String(test[0]);
+					// local name
+					test[1] = String(test[1]);
+					if (test[0] == "") {
+						test[0] = null;
+					}
+					// element to test against from dom
+					var node = Utilities.resolveQName(n.nodeName(), xpc.namespaceResolver, n, n.nodeType() == 1 /*Node.ELEMENT_NODE*/);
+					// namespace
+					node[0] = String(node[0]);
+					// local name
+					node[1] = String(node[1]);
+					if (node[0] == "") {
+						node[0] = null;
+					}
+					return this._matches(String(test[1]), String(node[1]));
+				}
+				return false;
+			case NodeTest.COMMENT:
+				return n.nodeType() == 8 /*Node.COMMENT_NODE*/;
+			case NodeTest.TEXT:
+				return n.nodeType() == 3 /*Node.TEXT_NODE*/ || n.nodeType() == 4 /*Node.CDATA_SECTION_NODE*/;
+			case NodeTest.PI:
+				return n.nodeType() == 7 /*Node.PROCESSING_INSTRUCTION_NODE*/
+					&& (this.value == null || n.nodeName(this.value));
+			case NodeTest.NODE:
+				return n.nodeType() == 9 /*Node.DOCUMENT_NODE*/
+					|| n.nodeType() == 1 /*Node.ELEMENT_NODE*/
+					|| n.nodeType() == 2 /*Node.ATTRIBUTE_NODE*/
+					|| n.nodeType() == 3 /*Node.TEXT_NODE*/
+					|| n.nodeType() == 4 /*Node.CDATA_SECTION_NODE*/
+					|| n.nodeType() == 8 /*Node.COMMENT_NODE*/
+					|| n.nodeType() == 7 /*Node.PROCESSING_INSTRUCTION_NODE*/;
+		}
+		return false;
 	};
 
 	NodeTest.prototype.toString = function () {
@@ -2214,81 +2294,6 @@ module.exports = jsel = (function () {
 				return "node()";
 		}
 		return "<unknown nodetest type>";
-	};
-
-	NodeTest.prototype.translate = function (val) {
-		if (!val) return val;
-		var str = val;
-		for (var key in XPathExpression.mappings) {
-			if (XPathExpression.mappings.hasOwnProperty(key)) {
-				str = str.replace(new RegExp(key, 'ig'), XPathExpression.mappings[key]);
-			}
-		}
-		return str;
-	};
-
-	NodeTest.prototype.matches = function (n, xpc) {
-		switch (this.type) {
-			case NodeTest.NAMETESTANY:
-				if (n.nodeType() == 2 /*Node.ATTRIBUTE_NODE*/
-					|| n.nodeType() == 1) { /*Node.ELEMENT_NODE*/
-					return true;
-				}
-				return false;
-			case NodeTest.NAMETESTPREFIXANY:
-				if ((n.nodeType() == 2 /*Node.ATTRIBUTE_NODE*/ || n.nodeType() == 1 /*Node.ELEMENT_NODE*/)) {
-					var ns = xpc.namespaceResolver.getNamespace(this.value, xpc.expressionContextNode);
-					if (ns == null) {
-						throw new Error("Cannot resolve QName " + this.value);
-					}
-					return true;
-				}
-				return false;
-			case NodeTest.NAMETESTQNAME:
-				if (n.nodeType() == 2 /*Node.ATTRIBUTE_NODE*/
-					|| n.nodeType() == 1) { /*Node.ELEMENT_NODE*/
-					// automatically fail if trying to use namespace
-					if (this.value.indexOf(":") > -1) {
-						return false;
-					}
-					var test = Utilities.resolveQName(this.value, xpc.namespaceResolver, xpc.expressionContextNode, false);
-					if (test[0] == null) {
-						throw new Error("Cannot resolve QName " + this.value);
-					}
-					test[0] = String(test[0]);
-					test[1] = String(test[1]);
-					if (test[0] == "") {
-						test[0] = null;
-					}
-					var node = Utilities.resolveQName(n.nodeName(), xpc.namespaceResolver, n, n.nodeType() == 1 /*Node.ELEMENT_NODE*/);
-					node[0] = String(node[0]);
-					node[1] = String(node[1]);
-					if (node[0] == "") {
-						node[0] = null;
-					}
-					if (xpc.caseInsensitive) {
-						return test[0] == node[0] && String(test[1]).toLowerCase() == String(node[1]).toLowerCase();
-					}
-					return test[0] == node[0] && test[1] == node[1];
-				}
-				return false;
-			case NodeTest.COMMENT:
-				return n.nodeType() == 8 /*Node.COMMENT_NODE*/;
-			case NodeTest.TEXT:
-				return n.nodeType() == 3 /*Node.TEXT_NODE*/ || n.nodeType() == 4 /*Node.CDATA_SECTION_NODE*/;
-			case NodeTest.PI:
-				return n.nodeType() == 7 /*Node.PROCESSING_INSTRUCTION_NODE*/
-					&& (this.value == null || n.nodeName(this.value));
-			case NodeTest.NODE:
-				return n.nodeType() == 9 /*Node.DOCUMENT_NODE*/
-					|| n.nodeType() == 1 /*Node.ELEMENT_NODE*/
-					|| n.nodeType() == 2 /*Node.ATTRIBUTE_NODE*/
-					|| n.nodeType() == 3 /*Node.TEXT_NODE*/
-					|| n.nodeType() == 4 /*Node.CDATA_SECTION_NODE*/
-					|| n.nodeType() == 8 /*Node.COMMENT_NODE*/
-					|| n.nodeType() == 7 /*Node.PROCESSING_INSTRUCTION_NODE*/;
-		}
-		return false;
 	};
 
 	NodeTest.NAMETESTANY = 0;
@@ -3273,8 +3278,6 @@ module.exports = jsel = (function () {
 		this.functions["{}match"] = Functions.match;
 		this.functions["{}replace"] = Functions.replace;
 		this.functions["{}id"] = Functions.id;
-//	this.functions["{}local-name"] = Functions.localName;
-//	this.functions["{}namespace-uri"] = Functions.namespaceURI;
 		this.functions["{}name"] = Functions.name;
 		this.functions["{}string"] = Functions.string;
 		this.functions["{}concat"] = Functions.concat;
@@ -4642,6 +4645,15 @@ module.exports = jsel = (function () {
 		},
 		toValue: function () {
 			return this.value;
+		},
+		previousSibling: function() {
+			return null;
+		},
+		nextSibling: function() {
+			return null;
+		},
+		firstChild: function() {
+			return null;
 		}
 	};
 
