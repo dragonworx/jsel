@@ -124,7 +124,7 @@ jsel allows you to use regular expressions against your `nodeName` and `attribut
 
 To provide your own custom mappings, just pass an object to `dom.map(..)` with key value pairs of find and replace regular expressions. The key matches against your expression, the value matches against the node (`nodeName` or `attribute`).
 
-For example, we can tell the dom that when we write "e" in our expressions, match it to "someLongElementName" nodes
+For example, we can tell the dom that when we write "e" in our expressions, match it to "someLongElementName" nodes.
 
     dom.map({
         'e': 'someLongElementName'

@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -6,10 +7,12 @@
 </head>
 <body>
 <div id="mocha"></div>
+<script src="json2-min.js"></script>
+<script src="assert.js"></script>
 <script src="../jsel.js"></script>
 <script src="mocha-min.js"></script>
 <script>mocha.setup('bdd')</script>
-<script src="assert.js"></script>
+<script>var _assert = assert;/*weird hack only for IE7+IE5 compatibility mode, global assert object is nullified otherwise?!!*/</script>
 <script src="../test/test.js"></script>
 <script>
     mocha.checkLeaks();

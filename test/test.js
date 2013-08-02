@@ -1,9 +1,14 @@
 /**
  * use require in node.js
  */
+var assert;
+
 if (typeof require === "function") {
-	var assert = require("assert");
+	assert = require("assert");
 	var jsel = require("../jsel");
+} else {
+    /*weird hack only for IE7+IE5 compatibility mode, global assert object is nullified otherwise?!!*/
+    assert = _assert;
 }
 
 // define some arbitrary data
