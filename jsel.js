@@ -4735,12 +4735,13 @@ module.exports = jsel = (function () {
             if (node instanceof NamedNode) {
                 return null; // can this be null?
             }
-            var attribs = {},
-                type;
+            var attribs = {};
             for (var key in node) {
                 if (node.hasOwnProperty(key)) {
-                    type = typeof node[key];
-                    if (type === "string" || type === "number") {
+                    if (typeof node[key] === "string"
+						|| typeof node[key] === "number"
+						|| node[key] instanceof Date
+						|| node[key] instanceof RegExp) {
                         attribs[key] = node[key];
                     }
                 }

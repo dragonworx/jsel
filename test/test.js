@@ -44,7 +44,7 @@ var data = {
 };
 
 // define a custom adapter for this data, these are the full handlers needed - nodeName, childNodes, attributes, and nodeValue
-var customAdapters = {
+var customSchema = {
 	nodeName: function (node) {
 		// return a string representing the element name equivalent of the given node
 		return node.type;
@@ -138,7 +138,7 @@ describe('General Selectors:', function () {
 
 describe('Custom Adapter:', function () {
 	var dom = jsel(data);
-	dom.adapters(customAdapters);
+	dom.schema(customSchema);
 	it('should return 5 for select "count(//*)"', function () {
 		assert.equal(5, dom.select('count(//*)'));
 	});
@@ -153,9 +153,9 @@ describe('Custom Adapter:', function () {
 	});
 });
 
-describe('Custom Mappings with Adapters:', function() {
+describe('Custom Mappings with Schema:', function() {
 	var dom = jsel(data);
-	dom.adapters(customAdapters).map(customMappings);
+	dom.schema(customSchema).map(customMappings);
 	it('should return 2 for select "count(//element)"', function () {
 		assert.equal(2, dom.select('count(//element)'));
 	});

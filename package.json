@@ -1,6 +1,6 @@
 {
 	"name": "jsel",
-	"version": "0.9.0",
+	"version": "1.0.0",
 	"description": "DOM 3 XPath implementation for JavaScript objects.",
 	"engines": {
 		"node": ">=0.10.0"
@@ -22,6 +22,7 @@
 		"json",
 		"javascript",
 		"expression",
+		"matching",
 		"selector"
 	],
 	"licenses": [
