@@ -1,6 +1,6 @@
 var fs = require("fs");
 var csvText = fs.readFileSync("input.csv").toString();
-var jsel = require("./jsel");
+var jsel = require("./../jsel");
 var dom = jsel(csvText);
 dom.schema({
 	onPreProcess: function (value) {
