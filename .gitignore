@@ -11,6 +11,6 @@ logs
 results
 
 npm-debug.log
-node-modules
-.idea
-debug
+node-modules/
+.idea/
+_debug/*
