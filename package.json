@@ -1,6 +1,6 @@
 {
 	"name": "jsel",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "DOM 3 XPath implementation for JavaScript objects.",
 	"engines": {
 		"node": ">=0.10.0"
@@ -8,6 +8,11 @@
 	"author": {
 		"name": "Ali Chamas"
 	},
+	"contributors": [
+		{
+			"name": "Tim Harrington"
+		}
+	],
 	"dependencies": {},
 	"devDependencies": {
 		"mocha": "1.12.x"

@@ -4072,7 +4072,7 @@ module.exports = jsel = (function () {
 
     Utilities.instance_of = function (o, c) {
         while (o != null) {
-            if (o.constructor === c) {
+            if (o.constructor.name === c.name) {
                 return true;
             }
             if (o === Object) {
