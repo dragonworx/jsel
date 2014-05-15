@@ -5,18 +5,23 @@ Written by Ali Chamas [site](http://www.musicartscience.com.au).
 
 Based on the npm module "xpath" originally written by Cameron McCormack ([blog](http://mcc.id.au/xpathjs)) with thanks to Yaron Naveh ([blog](http://webservices20.blogspot.com/)).
 
-Full documentation available at [www.jselement.org](http://www.jselement.org).
+#### Contributors:
+
+* Tim Harrington
 
 ## Install
 
-#### Node.js
+#### Node.js / CommonJS
 Install locally with [npm](http://github.com/isaacs/npm):
 
     npm install jsel
 
-Then `require(..)` module.
+Then require the module into your application.
 
     var jsel = require('jsel');
+    
+Now you can wrap your JSON data by using the `jsel()` function and receive a DOM object.
+
     var dom = jsel(data);
 
 #### Browser
@@ -24,18 +29,16 @@ To run jsel in the browser, just include the `jsel.js` file from the local jsel 
 
     <script src='jsel.js'></script>
 
-You will receive a global `jsel` object. Use it like you would a `require('jsel')` object.
+You will receive a global `jsel` object. Use it like you would a regular `jsel` object.
 
     var dom = jsel(data);
 
 ## Usage
 Jsel allows you to apply XPath expressions against your JavaScript data objects, and return values from them.
 
-Jsel supports the following XPath functions: `last`, `position`, `count`, `match`, `replace`, `id`, `name`, `string`, `concat`, `starts-with`, `contains`, `substring-before`, `substring-after`, `substring`, `string-length`, `normalize-space`, `translate`, `boolean`, `not`, `true`, `false`, `lang`, `number`, `sum`, `floor`, `ceiling`, `round`.
-
 For example, say you had the following data.
 
-    var dom = jsel({
+    var myJsonData = {
         title: 'abc',
         children: [
             {
@@ -47,9 +50,25 @@ For example, say you had the following data.
             foo: 555,
             foo2: 'bar2'
         }
-    });
+    };
+    
+Wrap it in a JSel object like this to receive a Document Object Model..
 
-The following expressions would all be true.
+    var dom = jsel(myJsonData);
+	
+You now have a DOM object which you apply XPath expressions to and select data from.
+
+The DOM object has the following methods:
+
+* `select()` - return a single value from your data
+* `selectAll()` - return a result set from your data
+* `schema()` - set the schema to change how your XPath expressions work
+
+You can return scalar results from XPath expressions, such as the `count()` XPath function.
+
+**Note** Jsel will return you the actual node values from your data. Think of it like turning any JavaScript object into a walkable DOM.
+
+Given the `dom` variable you've just created, the following XPath expressions would all be true.
 
     dom.select('count(//*)') === 5;
     dom.select('@title') === 'abc';
@@ -63,51 +82,50 @@ The following expressions would all be true.
     dom.select('*/children/*[2]/text()') === 'val';
     dom.selectAll('//@foo') === ['bar', 555];
 
-Use `dom.select(..)` to return a single value, and `dom.selectAll(..)` to return a result set. You can return scalar results from XPath expressions, such as the `count(..)` function.
+Jsel supports the following [XPath functions](https://developer.mozilla.org/en-US/docs/Web/XPath/Functions): `last`, `position`, `count`, `match`, `replace`, `id`, `name`, `string`, `concat`, `starts-with`, `contains`, `substring-before`, `substring-after`, `substring`, `string-length`, `normalize-space`, `translate`, `boolean`, `not`, `true`, `false`, `lang`, `number`, `sum`, `floor`, `ceiling`, `round`.
 
-Jsel will return you the actual node values from your data. Think of it like turning any JavaScript object into a walkable DOM.
+#### Schemas
 
-## Schemas
+By default, JSel works with JavaScript objects by treating simple values of object keys as attributes (eg. a key value where the value is a string, number or boolean), and values as objects as elements.
 
-#### Why Schemas?
+Since Jsel converts all string, number or boolean values to attributes, and all object or array values to named children, you don't even need to create a schema if you are working with JSON data, it all just works out of the box.
 
-Jsel allows you to define a set of callbacks which resolve the following properties of each node in your data as required by the XPath engine:
+However you can override this default behaviour by defining a set of callbacks which resolve the schema of each node in your data as they are being walked by the XPath engine.
 
-* **nodeName** - *{string | null}* the element name of the node
-* **childNodes** - *{array | null}* the children of the node
-* **attributes** - *{object | null}* a key/value object of the node's attributes
-* **nodeValue** - *{* | null}* the whole value of the node
+To do so, create an object with function values for some or all of the following keys:
 
-These properties make up the structure of your data, according to XPath. You have total control of how to interpret these values from each node in your dom as they are being required. Jsel takes care of caching, so the values are only asked for once. This builds a virtual tree of walkable nodes for the XPath engine whenever you `select` or `selectAll` an expression, and will be cached for subsequent selections of that DOM.
+    var schema = {
+	    /*@param {*} node A node from your data
+		* @returns {string} The element name of the node
+		*/
+	    nodeName: function(node) {},
+		/*@param {*} node A node from your data
+		* @returns {Array} The children of the node
+		*/
+	    childNodes: function(node) {},
+		/*@param {*} node A node from your data
+		* @returns {Object} A key/value object of the node's attributes
+		*/
+	    attributes: function(node) {},
+		/*@param {*} node A node from your data - you can use text() in the XPath expression to select this value
+		* @returns {*} The value of the node
+		*/
+	    nodeValue: function(node) {},
+	}
 
-#### Default Schema
+These properties make up the structure of your data, as according to XPath. You now have total control of how to interpret these values from each node in your dom as they are being required.
 
-Jsel has default schema built in that convert all string or number values to attributes, and all object or array values to named children. Therefore you don't even need to create a schema if you like, it all just works out of the box.
-
-#### Defining Schemas
-
-Defining your own schema allows you to completely design how your data is defined, and therefore searchable by XPath. For example, you could define a schema to handle CSV data, and pass a CSV string to jsel so you could find expressions like `//line` or `//line[1]/field[2]`.
-
-To provide your own custom schema pass an object to `dom.schema(..)` with all or some of the following keys (any keys not passed will use default schema handler).
-
-    dom.schema({
-        /** @returns {string|null} the element name of this current node */
-        nodeName: function(node) {/*...*/},
-
-        /** @returns {array|null} an array with the children of this node */
-        childNodes: function(node) {/*...*/},
-
-        /** @returns {object|null} an object with key values to represent the nodes attributes */
-        attributes: function(node) {/*...*/},
-
-        /** @returns {*|null} any value to represent the nodes value.
-        * you can use text() in the expression to select the value */
-        nodeValue: function(node) {/*...*/}
-    });
+Jsel takes care of caching, so the values are only asked for once. This builds a virtual tree of walkable nodes for the XPath engine whenever you `select` or `selectAll` an expression, and will be cached for subsequent selections of that DOM.
 
 It's ok to return `null` from any function. That would be the same as not defining an adapter for that property and just means that there will no way to match that property in an expression.
 
-It's even possible to create a temporary array or object structure for either `childNodes` and/or `attributes` and return that if you would like to simplify your expressions and aggregate your data.
+Once you've defined a schema, attach it to your dom object.
+
+    dom.schema(schema); // set the schema of this DOM object to change how data is searched
+
+It's even possible to create a temporary array or object structure for either `childNodes` and/or `attributes` and return that if you would like to simplify your expressions and aggregate your data. Since JSel caches the resolution of each node, it's only processed once and allows you to collect or aggregate inner data to make your expressions more flexible.
+
+Defining your own schema allows you to completely design how your data is defined, and therefore searchable by XPath. For example, you could define a schema to handle CSV data, and pass a CSV string to jsel so you could find expressions like `//line` or `//line[1]/field[2]`.
 
 #### Reuse and Share Schemas
 
@@ -117,11 +135,11 @@ For example, you could write a schema to unify and normalise the ast tree of [Ug
 
 #### Writing Schemas for Uniform Data
 
-If your data is uniform you could use the same logic for each node in your schema. Since each node will have a common structure, you can simplify how each property handler in the schema works for all nodes.
+If your data is uniform you could use the same logic for each node in your schema. Since each node will have a common structure, you can simplify how each schema function works for all nodes.
 
 #### Writing Schemas for Variable Data
 
-If your data has variable data schema, you might need to use conditional tests inside your schema such as `if` or `switch` statements. Since each node will vary, you'd need to test each node and handle each property accordingly.
+If your data has variable data schema, you might need to use conditional tests inside your schema such as `if` or `switch` statements. Since each node will vary, you'd need to test each node and return from the schema functions accordingly.
 
 #### User Nodes
 
