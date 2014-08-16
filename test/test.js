@@ -91,7 +91,9 @@ describe('General Selectors:', function () {
 		title: "abc", 			// attribute "title" value "abc"	= @title
 		children: [				// child 2 "children"				= */children
 			{					// child 3 "object"					= */children[1]
-				foo: "bar"		// attribute "foo" value "bar"		= */children[1]/@foo
+				foo: "bar",		// attribute "foo" value "bar"		= */children[1]/@foo
+				bTrue: true,	// attribute "boolTrue" value true	= */
+				bFalse: false,	// attribute "boolTrue" value true	= */
 			},
 			'val'				// child 4 "string" value "val"		= */children[2]
 		],
@@ -114,6 +116,12 @@ describe('General Selectors:', function () {
 	});
 	it('should return 555 for select "//@foo[2]"', function () {
 		assert.equal(555, dom.select('//@foo[2]'));
+	});
+	it('should return true for select "*/children/*[1]/@bTrue"', function () {
+		assert.equal(true, dom.select('*/children/*[1]/@bTrue'));
+	});
+	it('should return false for select "*/children/*[1]/@bFalse"', function () {
+		assert.equal(false, dom.select('*/children/*[1]/@bFalse'));
 	});
 	it('should return 2 for select "count(//children//*)"', function () {
 		assert.equal(2, dom.select('count(//children//*)'));

@@ -1,5 +1,5 @@
 /**
- * jselement.js
+ * jselement.js - 1.1.0
  *
  * DOM 3 XPath implementation for JavaScript object data.
  *
@@ -112,18 +112,8 @@
  * Initial version: June 14, 2004
  */
 
-// polyfil module if in browser
-if (typeof module === "undefined") {
-    module = {
-        exports: undefined
-    };
-}
-
-// global used for browser
-var jsel = null;
-
 // export to module and global
-module.exports = jsel = (function () {
+var jsel = (function () {
     /**
      * xpath.js
      */
@@ -1682,7 +1672,7 @@ module.exports = jsel = (function () {
             var ns = this.filter.evaluate(c);
             if (!Utilities.instance_of(ns, XNodeSet)) {
                 if (this.filterPredicates != null && this.filterPredicates.length > 0 || this.locationPath != null) {
-                    throw new Error("Path expression filter must evaluate to a nodset if predicates or location path are used");
+                    throw new Error("Path expression filter must evaluate to a nodeset if predicates or location path are used");
                 }
                 return ns;
             }
@@ -1731,7 +1721,7 @@ module.exports = jsel = (function () {
                     xpc.contextNode = nodes[j];
                     switch (step.axis) {
                         case Step.ANCESTOR:
-//						console.log("ANCESTOR");
+						//log("ANCESTOR");
                             // look at all the ancestor nodes
                             if (xpc.contextNode === xpc.virtualRoot) {
                                 break;
@@ -1754,7 +1744,7 @@ module.exports = jsel = (function () {
                             break;
 
                         case Step.ANCESTORORSELF:
-//						console.log("ANCESTORORSELF");
+						//log("ANCESTORORSELF");
                             // look at all the ancestor nodes and the current node
                             for (var m = xpc.contextNode; m != null; m = m.nodeType() == 2 /*Node.ATTRIBUTE_NODE*/ ? this.getOwnerElement(m) : m.parentNode()) {
                                 if (step.nodeTest.matches(m, xpc)) {
@@ -1767,7 +1757,7 @@ module.exports = jsel = (function () {
                             break;
 
                         case Step.ATTRIBUTE:
-//						console.log("ATTRIBUTE");
+						//log("ATTRIBUTE");
                             // look at the attributes
                             var nnm = xpc.contextNode.attributes();
                             if (nnm != null) {
@@ -1781,18 +1771,18 @@ module.exports = jsel = (function () {
                             break;
 
                         case Step.CHILD:
-//						console.log("CHILD");
+						//log("CHILD");
                             // look at all child elements
                             for (var m = xpc.contextNode.firstChild(); m != null; m = m.nextSibling()) {
-//							console.log(xpc.contextNode.nodeName(), m.nodeName());
-                                if (step.nodeTest.matches(m, xpc)) {
+							//log(xpc.contextNode.nodeName(), m.nodeName());
+                            if (step.nodeTest.matches(m, xpc)) {
                                     newNodes.push(m);
                                 }
                             }
                             break;
 
                         case Step.DESCENDANT:
-//						console.log("DESCENDANT");
+						//log("DESCENDANT");
                             // look at all descendant nodes
                             var st = [ xpc.contextNode.firstChild() ];
                             while (st.length > 0) {
@@ -1811,7 +1801,7 @@ module.exports = jsel = (function () {
                             break;
 
                         case Step.DESCENDANTORSELF:
-//						console.log("DESCENDANTORSELF");
+						//log("DESCENDANTORSELF");
                             // look at self
                             if (step.nodeTest.matches(xpc.contextNode, xpc)) {
                                 newNodes.push(xpc.contextNode);
@@ -1834,7 +1824,7 @@ module.exports = jsel = (function () {
                             break;
 
                         case Step.FOLLOWING:
-//						console.log("FOLLOWING");
+						log("FOLLOWING");
                             if (xpc.contextNode === xpc.virtualRoot) {
                                 break;
                             }
@@ -1863,7 +1853,7 @@ module.exports = jsel = (function () {
                             break;
 
                         case Step.FOLLOWINGSIBLING:
-//						console.log("FOLLOWINGSIBLING");
+						//log("FOLLOWINGSIBLING");
                             if (xpc.contextNode === xpc.virtualRoot) {
                                 break;
                             }
@@ -1875,7 +1865,7 @@ module.exports = jsel = (function () {
                             break;
 
                         case Step.NAMESPACE:
-//						console.log("NAMESPACE");
+						//log("NAMESPACE");
                             var n = {};
                             if (xpc.contextNode.nodeType() == 1 /*Node.ELEMENT_NODE*/) {
                                 n["xml"] = XPath.XML_NAMESPACE_URI;
@@ -1906,7 +1896,7 @@ module.exports = jsel = (function () {
                             break;
 
                         case Step.PARENT:
-//						console.log("PARENT");
+						//log("PARENT");
                             m = null;
                             if (xpc.contextNode !== xpc.virtualRoot) {
                                 if (xpc.contextNode.nodeType() == 2 /*Node.ATTRIBUTE_NODE*/) {
@@ -1921,7 +1911,7 @@ module.exports = jsel = (function () {
                             break;
 
                         case Step.PRECEDING:
-//						console.log("PRECEDING");
+						//log("PRECEDING");
                             var st;
                             if (xpc.virtualRoot != null) {
                                 st = [ xpc.virtualRoot ];
@@ -1949,7 +1939,7 @@ module.exports = jsel = (function () {
                             break;
 
                         case Step.PRECEDINGSIBLING:
-//						console.log("PRECEDINGSIBLING");
+						//log("PRECEDINGSIBLING");
                             if (xpc.contextNode === xpc.virtualRoot) {
                                 break;
                             }
@@ -1961,7 +1951,7 @@ module.exports = jsel = (function () {
                             break;
 
                         case Step.SELF:
-//							console.log("SELF");
+							//log("SELF");
                             if (step.nodeTest.matches(xpc.contextNode, xpc)) {
                                 newNodes.push(xpc.contextNode);
                             }
@@ -2023,7 +2013,6 @@ module.exports = jsel = (function () {
     };
 
     PathExpr.prototype.getOwnerElement = function (n) {
-//	console.log("getOwnerElement");
         // DOM 2 has ownerElement
         if (n.ownerElement) {
             return n.ownerElement;
@@ -2191,8 +2180,8 @@ module.exports = jsel = (function () {
         if (XPathExpression.mappings) {
             for (var key in XPathExpression.mappings) {
                 if (XPathExpression.mappings.hasOwnProperty(key)) {
-                    var testRegex = new RegExp(key, 'ig');
-                    var nodeRegex = new RegExp(XPathExpression.mappings[key], 'ig');
+                    var testRegex = new RegExp('^' + key + '$', 'ig');
+                    var nodeRegex = new RegExp('^' + XPathExpression.mappings[key] + '$', 'ig');
                     if (testRegex.test(testName) && nodeRegex.test(nodeName)) {
                         return true;
                     }
@@ -3271,6 +3260,19 @@ module.exports = jsel = (function () {
         return this.functions["{" + ns + "}" + ln];
     };
 
+    FunctionResolver.customFunctions = {};
+    FunctionResolver.addCustomFunction = function (ns, ln, fn) {
+        var func;
+        eval('func = ' + fn.toString());
+        this.customFunctions["{" + (ns ? ns : '') + "}" + ln] = func;
+    };
+
+    FunctionResolver.toString = function(fn) {
+        var source = fn.toString().replace(/^\s+|\s+$/g, '');
+        var args = source.match(/function[^(]+\(([^)]+)\)\s+\{/);
+        args = args ? args[1].match(/[a-zA-Z0-9_]+/g) : [];
+    };
+
     FunctionResolver.prototype.addStandardFunctions = function () {
         this.functions["{}last"] = Functions.last;
         this.functions["{}position"] = Functions.position;
@@ -3299,6 +3301,11 @@ module.exports = jsel = (function () {
         this.functions["{}floor"] = Functions.floor;
         this.functions["{}ceiling"] = Functions.ceiling;
         this.functions["{}round"] = Functions.round;
+        for (var key in FunctionResolver.customFunctions) {
+            if (FunctionResolver.customFunctions.hasOwnProperty(key)) {
+                this.functions[key] = FunctionResolver.customFunctions[key];
+            }
+        }
     };
 
 // Functions /////////////////////////////////////////////////////////////////
@@ -3335,7 +3342,7 @@ module.exports = jsel = (function () {
         if (arguments.length !== 3 && arguments.length !== 4) {
             throw new Error("Function match expects ({string}source, {string}expression, {string}modifiers)");
         }
-        var source = arguments[1].evaluate(c).stringValue();
+        var source = arguments[1].evaluate(c).stringValue().toString();
         var expression = arguments[2].evaluate(c).stringValue();
         var modifiers = arguments.length === 4 ? arguments[3].evaluate(c).stringValue() : '';
         var regex = new RegExp(expression, modifiers);
@@ -4070,9 +4077,17 @@ module.exports = jsel = (function () {
         }
     };
 
+    Utilities.constructorName = function(o) {
+        if (o.name) {
+            return o.name;
+        }
+        var name = o.toString().match(/function ([^( ]+)+/);
+        return name ? name[1] : undefined;
+    };
+
     Utilities.instance_of = function (o, c) {
         while (o != null) {
-            if (o.constructor.name === c.name) {
+            if (Utilities.constructorName(o.constructor) === Utilities.constructorName(c)) {
                 return true;
             }
             if (o === Object) {
@@ -4141,7 +4156,7 @@ module.exports = jsel = (function () {
         this.context.expressionContextNode = node;
         var result = this.xpath.evaluate(this.context);
         return new XPathResult(result, xpathType);
-    }
+    };
 
 // XPathNSResolverWrapper ////////////////////////////////////////////////////
 
@@ -4283,7 +4298,7 @@ module.exports = jsel = (function () {
         }
 
         return result;
-    };
+    }
 
     /**
      * jselement.js
@@ -4316,14 +4331,14 @@ module.exports = jsel = (function () {
      * @returns {Array}
      */
     function each (array, func, scope) {
-        var map = [], keys;
+        var map = [], keys, i;
         if (array instanceof Array) {
-            for (var i = 0; i < array.length; i++) {
+            for (i = 0; i < array.length; i++) {
                 map.push(func.call(scope || array, array[i], i));
             }
         } else {
             keys = objectKeys(array);
-            for (var i = 0; i < keys.length; i++) {
+            for (i = 0; i < keys.length; i++) {
                 map.push(func.call(scope || array, array[keys[i]], keys[i]));
             }
         }
@@ -4352,13 +4367,19 @@ module.exports = jsel = (function () {
      * @param node
      * @constructor
      */
-    function Document (node) {
+    function Document (node, options) {
         this._schema = {};
         this._map = {};
         this._node = node;
+
         each(defaultSchema, function (value, key) {
             this._schema[key] = value;
         }, this);
+
+        if (typeof options === 'object' && options !== null) {
+            if (options.hasOwnProperty('schema')) this.schema(options.schema);
+            if (options.hasOwnProperty('map')) this.map(options.map);
+        }
     }
 
     Document.prototype = {
@@ -4476,6 +4497,8 @@ module.exports = jsel = (function () {
     /**
      * Mirrors ELEMENT_NODE Dom interface
      * @param node
+     * @param parentNode
+     * @param ownerDocument
      * @constructor
      */
     function Node (node, parentNode, ownerDocument) {
@@ -4590,6 +4613,7 @@ module.exports = jsel = (function () {
             if (attributes !== null) {
                 return attributes.values[key];
             }
+            return null;
         },
         getAttributeNS: function (key) {
             return this.getAttribute(key);
@@ -4690,6 +4714,7 @@ module.exports = jsel = (function () {
      * Mirrors TEXT_NODE Dom interface
      * @param txt
      * @param parentNode
+     * @param ownerDocument
      * @constructor
      */
     function Text (txt, parentNode, ownerDocument) {
@@ -4725,29 +4750,49 @@ module.exports = jsel = (function () {
      * default schema
      */
     var defaultSchema = {
+        /**
+         * return the name of the given node
+         * @param {*} node
+         * @returns {string}
+         */
         nodeName: function (node) {
             if (node instanceof NamedNode) {
                 return node.nodeName;
             }
             return node instanceof Array ? "array" : typeof node;
         },
+        /**
+         * return an object with key:values representing the given nodes attributes
+         * @param {*} node
+         * @returns {Object}
+         */
         attributes: function (node) {
             if (node instanceof NamedNode) {
-                return null; // can this be null?
+                return null;
             }
-            var attribs = {};
+            var attribs = {}, typeOf, value;
             for (var key in node) {
                 if (node.hasOwnProperty(key)) {
-                    if (typeof node[key] === "string"
-						|| typeof node[key] === "number"
-						|| node[key] instanceof Date
-						|| node[key] instanceof RegExp) {
-                        attribs[key] = node[key];
+                    value = node[key];
+                    typeOf = typeof value;
+                    if (typeOf === "string"
+						|| typeOf === "number"
+                        || typeOf === "string"
+                        || typeOf === "boolean"
+                        || typeOf === "function"
+						|| value instanceof Date
+						|| value instanceof RegExp) {
+                        attribs[key] = value;
                     }
                 }
             }
             return attribs;
         },
+        /**
+         * return an array of the children of the given node
+         * @param {*} node
+         * @returns {Array}
+         */
         childNodes: function (node) {
             if (node instanceof NamedNode) {
                 return node.childNodes;
@@ -4755,18 +4800,25 @@ module.exports = jsel = (function () {
             if (node instanceof Array) {
                 return node;
             }
-            var children = [];
+            var children = [], typeOf, value;
             for (var key in node) {
                 if (node.hasOwnProperty(key)) {
-                    if (typeof node[key] === "object" || node[key] instanceof Array) {
-                        children.push(new NamedNode(key, node[key]));
+                    value = node[key];
+                    typeOf = typeof value;
+                    if ((typeOf === "object" && value !== null) || value instanceof Array) {
+                        children.push(new NamedNode(key, value));
                     }
                 }
             }
             return children;
         },
+        /**
+         * return the low-level value of the given node
+         * @param {*} node
+         * @returns {*}
+         */
         nodeValue: function (node) {
-            if (typeof node !== "object" && !(node instanceof Array)) {
+            if ((typeof node !== "object" && node !== null) && !(node instanceof Array)) {
                 return node;
             } else {
                 return null;
@@ -4774,30 +4826,32 @@ module.exports = jsel = (function () {
         }
     };
 
-    /**
-     * Module exports
-     * @param node
-     * @returns {Document}
-     */
-    module.exports = function (node) {
+    var jsel = function (node) {
         return new Document(node);
     };
 
-	module.exports.Node = function (nodeName, value) {
+    jsel.Node = function (nodeName, value) {
 		return new UserNode(nodeName,value);
 	};
 
-	module.exports.isNode = function(obj, nodeName) {
+    jsel.isNode = function(obj, nodeName) {
 		if (!nodeName) {
 			return obj instanceof UserNode;
 		}
 		return obj instanceof UserNode && obj.nodeName === nodeName;
 	};
 
-	module.exports.schema = {
+    jsel.schema = {
 		Default: defaultSchema
 	};
 
-    // return for the browser too
-    return module.exports;
+    jsel.addFunction = function(ns, name, fn) {
+        FunctionResolver.addCustomFunction(ns, name, fn);
+    };
+
+    return jsel;
 })();
+
+if (typeof module !== 'undefined') {
+    module.exports = jsel;
+}
