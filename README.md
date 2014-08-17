@@ -5,6 +5,11 @@ Written by Ali Chamas [site](http://www.musicartscience.com.au).
 
 Based on the npm module "xpath" originally written by Cameron McCormack ([blog](http://mcc.id.au/xpathjs)) with thanks to Yaron Naveh ([blog](http://webservices20.blogspot.com/)).
 
+#### Try Online
+Try the interactive editor to test your own data at:
+
+www.jselement.org
+
 #### Contributors:
 
 * Tim Harrington
