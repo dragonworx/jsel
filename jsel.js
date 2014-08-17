@@ -1,5 +1,5 @@
 /**
- * jselement.js - 1.1.0
+ * jselement.js - 1.1.3
  *
  * DOM 3 XPath implementation for JavaScript object data.
  *

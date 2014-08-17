@@ -8,7 +8,7 @@ Based on the npm module "xpath" originally written by Cameron McCormack ([blog](
 #### Try Online
 Try the interactive editor to test your own data at:
 
-www.jselement.org
+[www.jselement.org](http://www.jselement.org)
 
 #### Contributors:
 
