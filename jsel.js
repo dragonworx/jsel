@@ -4830,9 +4830,13 @@ var jsel = (function () {
         return new Document(node);
     };
 
-    jsel.Node = function (nodeName, value) {
-		return new UserNode(nodeName,value);
-	};
+    jsel.UserNode = function (nodeName, value) {
+        return new UserNode(nodeName, value);
+    };
+
+    jsel.NamedNode = function (nodeName, childNodes) {
+        return new NamedNode(nodeName, childNodes);
+    };
 
     jsel.isNode = function(obj, nodeName) {
 		if (!nodeName) {
