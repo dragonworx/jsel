@@ -8,7 +8,7 @@ Based on the npm module "xpath" originally written by Cameron McCormack ([blog](
 #### Try Online
 Try the interactive editor to test your own data at:
 
-[www.jselement.org](http://www.jselement.org)
+[dragonworx.github.io/jsel](http://dragonworx.github.io/jsel/)
 
 #### Contributors:
 
@@ -29,16 +29,18 @@ Now you can wrap your JSON data by using the `jsel()` function and receive a DOM
 
     var dom = jsel(data);
 
-#### Browser
+#### Runnign in the Browser
+
 To run jsel in the browser, just include the `jsel.js` file from the local jsel npm module installation into your web page.
 
-    <script src='jsel.js'></script>
+    <script src='node_modules/jsel/jsel.js'></script>
 
-You will receive a global `jsel` object. Use it like you would a regular `jsel` object.
+You will receive a global `jsel` object. Use it like you would a regular `jsel` object in NodeJS.
 
     var dom = jsel(data);
 
 ## Usage
+
 Jsel allows you to apply XPath expressions against your JavaScript data objects, and return values from them.
 
 For example, say you had the following data.
@@ -57,21 +59,20 @@ For example, say you had the following data.
         }
     };
     
-Wrap it in a JSel object like this to receive a Document Object Model..
+Wrap it in a JSel object like this to receive a Document Object Model.
 
     var dom = jsel(myJsonData);
 	
-You now have a DOM object which you apply XPath expressions to and select data from.
+You now have a DOM object which you can apply XPath expressions to and select data from.
 
-The DOM object has the following methods:
+The DOM object is similar to an XMLDocument and has the following methods to select either single or multiple elements (The element is an actual sub object from your data, not a copy):
 
 * `select()` - return a single value from your data
-* `selectAll()` - return a result set from your data
-* `schema()` - set the schema to change how your XPath expressions work
+* `selectAll()` - return a result set from your data (array)
 
-You can return scalar results from XPath expressions, such as the `count()` XPath function.
+You can return scalar results from XPath expressions, such as when using the `count()` XPath function.
 
-**Note** Jsel will return you the actual node values from your data. Think of it like turning any JavaScript object into a walkable DOM.
+**Note** Jsel will return you the actual node values from your data. Think of it like turning any JavaScript object into a walkable XML document.
 
 Given the `dom` variable you've just created, the following XPath expressions would all be true.
 

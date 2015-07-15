@@ -1,6 +1,6 @@
 {
 	"name": "jsel",
-	"version": "1.1.3",
+	"version": "1.1.4",
 	"description": "DOM 3 XPath implementation for JavaScript objects.",
 	"engines": {
 		"node": ">=0.10.0"
@@ -37,6 +37,6 @@
 		}
 	],
 	"readmeFilename": "README.md",
-	"_id": "jsel@1.0.0",
+	"_id": "jsel@1.1.4",
 	"_from": "jsel@"
 }
