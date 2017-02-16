@@ -190,7 +190,7 @@ We could even tell the dom that when we write "person" or "human", match it any 
 
 ## Tests
 
-Install [mocha](http://visionmedia.github.io/mocha/#installation) globally
+Install [mocha](http://mochajs.org/#installation) globally
 
     npm install -g mocha
 
