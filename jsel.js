@@ -3262,7 +3262,7 @@ var jsel = (function () {
 
     FunctionResolver.customFunctions = {};
     FunctionResolver.addCustomFunction = function (ns, ln, fn) {
-        var func;
+        var func = function () { return null; };
         eval('func = ' + fn.toString());
         this.customFunctions["{" + (ns ? ns : '') + "}" + ln] = func;
     };
