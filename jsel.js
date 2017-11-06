@@ -3689,7 +3689,8 @@ var jsel = (function () {
     Utilities.resolveQName = function (qn, nr, n, useDefault) {
         var parts = Utilities.splitQName(qn);
         if (parts[0] != null) {
-            parts[0] = nr.getNamespace(parts[0], n);
+            var ns = nr.getNamespace(parts[0], n);
+            parts[0] = ns ? ns : parts[0];
         } else {
             if (useDefault) {
                 parts[0] = nr.getNamespace("", n);
