@@ -1,5 +1,5 @@
 /**
- * jselement.js - 1.1.3
+ * jselement.js - 1.1.6
  *
  * DOM 3 XPath implementation for JavaScript object data.
  *
@@ -3686,20 +3686,16 @@ var jsel = (function () {
     return [qn.substring(0, i), qn.substring(i + 1)];
   };
 
-    Utilities.resolveQName = function (qn, nr, n, useDefault) {
-        var parts = Utilities.splitQName(qn);
-        if (parts[0] != null) {
-            var ns = nr.getNamespace(parts[0], n);
-            parts[0] = ns ? ns : parts[0];
-        } else {
-            if (useDefault) {
-                parts[0] = nr.getNamespace("", n);
-                if (parts[0] == null) {
-                    parts[0] = "";
-                }
-            } else {
-                parts[0] = "";
-            }
+  Utilities.resolveQName = function (qn, nr, n, useDefault) {
+    var parts = Utilities.splitQName(qn);
+    if (parts[0] != null) {
+      var ns = nr.getNamespace(parts[0], n);
+      parts[0] = ns ? ns : parts[0];
+    } else {
+      if (useDefault) {
+        parts[0] = nr.getNamespace("", n);
+        if (parts[0] == null) {
+          parts[0] = "";
         }
       } else {
         parts[0] = "";
