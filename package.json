@@ -1,6 +1,6 @@
 {
 	"name": "jsel",
-	"version": "1.1.4",
+	"version": "1.1.5",
 	"description": "DOM 3 XPath implementation for JavaScript objects.",
 	"engines": {
 		"node": ">=0.10.0"
