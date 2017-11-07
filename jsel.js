@@ -3260,12 +3260,12 @@ var jsel = (function () {
     return this.functions["{" + ns + "}" + ln];
   };
 
-  FunctionResolver.customFunctions = {};
-  FunctionResolver.addCustomFunction = function (ns, ln, fn) {
-    var func;
-    eval('func = ' + fn.toString());
-    this.customFunctions["{" + (ns ? ns : '') + "}" + ln] = func;
-  };
+    FunctionResolver.customFunctions = {};
+    FunctionResolver.addCustomFunction = function (ns, ln, fn) {
+        var func = function () { return null; };
+        eval('func = ' + fn.toString());
+        this.customFunctions["{" + (ns ? ns : '') + "}" + ln] = func;
+    };
 
   FunctionResolver.toString = function (fn) {
     var source = fn.toString().replace(/^\s+|\s+$/g, '');
@@ -3686,15 +3686,20 @@ var jsel = (function () {
     return [qn.substring(0, i), qn.substring(i + 1)];
   };
 
-  Utilities.resolveQName = function (qn, nr, n, useDefault) {
-    var parts = Utilities.splitQName(qn);
-    if (parts[0] != null) {
-      parts[0] = nr.getNamespace(parts[0], n);
-    } else {
-      if (useDefault) {
-        parts[0] = nr.getNamespace("", n);
-        if (parts[0] == null) {
-          parts[0] = "";
+    Utilities.resolveQName = function (qn, nr, n, useDefault) {
+        var parts = Utilities.splitQName(qn);
+        if (parts[0] != null) {
+            var ns = nr.getNamespace(parts[0], n);
+            parts[0] = ns ? ns : parts[0];
+        } else {
+            if (useDefault) {
+                parts[0] = nr.getNamespace("", n);
+                if (parts[0] == null) {
+                    parts[0] = "";
+                }
+            } else {
+                parts[0] = "";
+            }
         }
       } else {
         parts[0] = "";
