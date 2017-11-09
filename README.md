@@ -12,7 +12,9 @@ Try the interactive editor to test your own data at:
 
 #### Contributors:
 
-* Tim Harrington
+* [tharrington1](https://github.com/tharrington1)
+* [mortonfox](https://github.com/mortonfox)
+* [MG55](https://github.com/MG55)
 
 ## Install
 
